@@ -2,7 +2,11 @@ import { PrismaClient } from '../../generated/prisma/client';
 import { DexPair } from "./types";
 
 export class Storage {
-    constructor(private prismaClient: PrismaClient) {}
+
+    private latestStatus: PairStatus[] = [];
+
+
+    constructor(private prismaClient: PrismaClient) { }
 
     /**
      * Saves or updates a DexPair in the database and records its price.
@@ -30,8 +34,6 @@ export class Storage {
                 txns: pair.txns ? JSON.stringify(pair.txns) : undefined
             }
         });
-
-        console.log(`Price saved for pair: ${pair.pairAddress} \nsymbol: ${pair.baseToken.symbol} \nprice: ${pair.priceNative}`);
     }
 
     /**
@@ -47,6 +49,15 @@ export class Storage {
         });
         return lastPrices;
     }
+
+    getStatus(): PairStatus[] {
+        return this.latestStatus;
+    }
+
+    setStatus(status: PairStatus[]) {
+        this.latestStatus = status;
+    }
+
 }
 
 // Utility to map a DexPair object into Prisma-compatible format
@@ -74,3 +85,12 @@ function mapPairToPrisma(pair: DexPair) {
         socials: pair.info?.socials ? JSON.stringify(pair.info.socials) : undefined
     };
 }
+
+
+export type PairStatus = {
+    symbol: string;
+    pairAddress: string;
+    ratio: number;
+    ema?: number;
+    lastAlert?: string;
+};

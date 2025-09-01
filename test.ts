@@ -1,1 +1,0 @@
-// https://api.dexpaprika.com/networks/ethereum/pools/0xc7bbec68d12a0d1830360f8ec58fa599ba1b0e9b/ohlcv

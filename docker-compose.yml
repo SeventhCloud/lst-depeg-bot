@@ -6,7 +6,7 @@ services:
     env_file:
       - .env                # default env file
     environment:
-      DATABASE_URL: file:/app/prisma/db.sqlite
+      DATABASE_URL: file:/app/prisma/dev.db
       LOG_LEVEL: ${LOG_LEVEL:-info}
     volumes:
       - ./pool-list.ts:/app/dist/resources/pool-list.js:ro

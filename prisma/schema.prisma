@@ -23,7 +23,7 @@ model DexPair {
   quoteSymbol   String
   fdv           Float?
   marketCap     Float?
-  pairCreatedAt Int?
+  pairCreatedAt BigInt?
   imageUrl      String?
   header        String?
   openGraph     String?

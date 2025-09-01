@@ -31,7 +31,7 @@ export class Storage {
             }
         });
 
-        console.log(`Price saved for pair: ${pair.pairAddress} \nsymbol: ${pair.symbol} \nprice: ${pair.price}`);
+        console.log(`Price saved for pair: ${pair.pairAddress} \nsymbol: ${pair.baseToken.symbol} \nprice: ${pair.priceNative}`);
     }
 
     /**

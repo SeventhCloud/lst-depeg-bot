@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../../generated/prisma/client';
 import { calculateEMA } from '../../utils/formulas';
 import { Notifier } from '../notifiers/types';
 import { DexPairRequest, DexscreenerService } from '../services/DexscreenerService';
@@ -9,7 +9,7 @@ export class LstMonitor {
   private prevRatios = new Map<string, number>();
   
   // Handles database operations for price storage
-  private storage = new Storage(PrismaClient);
+  private storage = new Storage(new PrismaClient());
 
   constructor(
     private lstPairs: DexPairRequest[], // List of LST pairs to monitor
@@ -21,7 +21,7 @@ export class LstMonitor {
   async check(): Promise<void> {
     for (const lst of this.lstPairs) {
       // Fetch current ratio data for the pair
-      const lstData = await this.dexscreener.getLstRatio(lst);
+      const lstData = await this.dexscreener.getLstPair(lst);
       if (!lstData) continue; // Skip if no data returned
 
       // Persist current price in storage
@@ -49,7 +49,7 @@ export class LstMonitor {
       } 
       // Otherwise, send normal status
       else {
-        await this.notifier.notify(`✅ *${lst.symbol}* ratio = ${ratio.toFixed(4)}`);
+        console.log(`✅ *${lst.symbol}* ratio = ${ratio.toFixed(4)}, EMA = ${ema?.toFixed(4)}`);
       }
 
       // Update previous ratio for this pair

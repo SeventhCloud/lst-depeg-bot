@@ -17,7 +17,7 @@ export class DexscreenerService {
    * @param pair - The pair to fetch data for
    * @returns DexPair data or null if fetch fails
    */
-  async getLstRatio(pair: DexPairRequest): Promise<DexPair | null> {
+  async getLstPair(pair: DexPairRequest): Promise<DexPair | null> {
     try {
       const url = `${this.baseUrl}/${pair.chainId}/${pair.pairAddress}`; // Construct API URL
       const res = await axios.get<DexscreenerResponse>(url);             // Fetch data

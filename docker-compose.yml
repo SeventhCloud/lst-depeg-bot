@@ -1,0 +1,13 @@
+services:
+  lst-depeg-bot:
+    build: .
+    container_name: lst-depeg-bot
+    restart: unless-stopped
+    env_file:
+      - .env                # default env file
+    environment:
+      DATABASE_URL: file:/app/prisma/db.sqlite
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    volumes:
+      - ./pool-list.ts:/app/dist/resources/pool-list.js:ro
+      - ./prisma:/app/prisma

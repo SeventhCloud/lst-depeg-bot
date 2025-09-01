@@ -1,18 +1,24 @@
-
 import { PrismaClient } from '../../generated/prisma/client';
 import { DexPair } from "./types";
 
 export class Storage {
     constructor(private prismaClient: PrismaClient) {}
 
+    /**
+     * Saves or updates a DexPair in the database and records its price.
+     * @param pair - The DexPair object containing all relevant data
+     */
     async savePrice(pair: DexPair) {
         const prismaData = mapPairToPrisma(pair);
+
+        // Upsert DexPair: create new or update existing record
         await this.prismaClient.dexPair.upsert({
             where: { id: pair.pairAddress },
             update: prismaData,
             create: prismaData
         });
 
+        // Save a new price record for historical tracking
         await this.prismaClient.price.create({
             data: {
                 dexPairId: pair.pairAddress,
@@ -28,6 +34,11 @@ export class Storage {
         console.log(`Price saved for pair: ${pair.pairAddress} \nsymbol: ${pair.symbol} \nprice: ${pair.price}`);
     }
 
+    /**
+     * Retrieves the latest price records for a given DexPair.
+     * @param pairId - The pair address (ID) to fetch prices for
+     * @returns Array of latest price entries (up to 500)
+     */
     async getPrices(pairId: string) {
         const lastPrices = await this.prismaClient.price.findMany({
             where: { dexPairId: pairId },
@@ -38,7 +49,7 @@ export class Storage {
     }
 }
 
-// utils for Storage Class
+// Utility to map a DexPair object into Prisma-compatible format
 function mapPairToPrisma(pair: DexPair) {
     return {
         id: pair.pairAddress,

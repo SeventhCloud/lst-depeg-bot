@@ -9,5 +9,4 @@ services:
       DATABASE_URL: file:/app/prisma/dev.db
       LOG_LEVEL: ${LOG_LEVEL:-info}
     volumes:
-      - ./pool-list.ts:/app/dist/resources/pool-list.js:ro
       - ./prisma:/app/prisma

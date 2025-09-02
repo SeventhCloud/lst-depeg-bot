@@ -6,13 +6,23 @@ import { Storage } from '../services/storage';
 
 /**
  * Notifier implementation that sends messages via Telegram.
- */
+*/
 export class TelegramBot implements Notifier {
+  allowedChats: number[] = [Number(config.TELEGRAM_CHAT_ID)]; // replace with your own chat id
   private bot: Telegraf;
 
   constructor(private storage: Storage) {
 
     this.bot = new Telegraf(config.TELEGRAM_BOT_TOKEN);
+
+    // Middleware runs for every incoming update -> check if chat is allowed Important for security. Ignore all other users
+    this.bot.use((ctx, next) => {
+      if (!this.allowedChats.includes(ctx.chat?.id ?? 0)) {
+        console.log(`Blocked unauthorized chat: ${ctx.chat?.id}`);
+        return; // Stop processing this update
+      }
+      return next(); // continue to next middleware/handler
+    });
 
     // Register command handlers
     this.bot.start((ctx) => ctx.reply('👋 LST Depeg Monitor is running.'));

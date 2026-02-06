@@ -1,14 +1,6 @@
 import axios from 'axios';
 import { DexscreenerResponse, DexPair } from './types';
 
-// Request format for monitoring a DEX pair
-export type DexPairRequest = {
-  chainId: string;      // Blockchain network ID
-  pairAddress: string;  // Token pair contract address
-  symbol: string;       // Symbol for the pair (e.g., "wstETH")
-  threshold: number;    // Threshold for alerts
-};
-
 export class DexscreenerService {
   private baseUrl = 'https://api.dexscreener.com/latest/dex/pairs'; // API endpoint
 
@@ -17,17 +9,12 @@ export class DexscreenerService {
    * @param pair - The pair to fetch data for
    * @returns DexPair data or null if fetch fails
    */
-  async getLstPair(pair: DexPairRequest): Promise<DexPair | null> {
-    try {
-      const url = `${this.baseUrl}/${pair.chainId}/${pair.pairAddress}`; // Construct API URL
-      const res = await axios.get<DexscreenerResponse>(url);             // Fetch data
-      const data = res.data;
-      if (!data) return null;                                             // Return null if no data
-      
-      return data.pair;                                                   // Return the pair object
-    } catch (err) {
-      console.error(`Dexscreener API error for ${pair.symbol}:`, err);    // Log errors
-      return null;                                                        // Return null on failure
-    }
+  async getLstPair(chainName: string, poolAdress: string, symbol: string): Promise<DexPair | null> {
+    const url = `${this.baseUrl}/${chainName}/${poolAdress}`; // Construct API URL
+    const res = await axios.get<DexscreenerResponse>(url);             // Fetch data
+    const data = res.data;
+    if (!data?.pairs) throw Error("Got Empty Pool Info");               // Return null if no data
+    return data.pair;                                                   // Return the pair object
+
   }
 }

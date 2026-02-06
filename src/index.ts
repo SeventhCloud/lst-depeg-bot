@@ -1,37 +1,62 @@
-import { LstMonitor } from './app/monitors/LstMonitor';
+import { catchError, concatMap, defer, EMPTY, exhaustMap, interval, lastValueFrom, repeat, timer } from 'rxjs';
+import { LstMonitorSmart } from './app/monitors/LstMonitorSmart';
 import { TelegramBot } from './app/notifiers/TelegramBot';
 import { Storage } from './app/services/storage';
 import { config } from './config';
 import { PrismaClient } from './generated/prisma/client';
 import { logger } from './infra/logger';
-import { Scheduler } from './infra/scheduler';
-import poolList from './resources/pool-list';
+import { StorageService } from './app/services/SotrageService';
+
+const POLL_INTERVAL_SECONDS = Number(process.env.POLL_INTERVAL_SECONDS);
 
 async function main() {
 
   const storage = new Storage(new PrismaClient());
+  const storageService = new StorageService();
 
   // Initialize the notifier service (Telegram in this case)
-  const telegramBot = new TelegramBot(storage);
+  const telegramBot = new TelegramBot(storage, storageService);
 
   // Load the list of LST pairs to monitor
-  const lstPairs = poolList;
 
   // Create the monitor instance with pairs and notifier
-  const monitor = new LstMonitor(lstPairs, telegramBot, storage);
+  const monitor = new LstMonitorSmart(storageService, telegramBot, storage);
 
-  // Create a scheduler to periodically run the monitor.check() function
-  // Interval is defined in config (in seconds, converted to ms)
-  const scheduler = new Scheduler(
-    () => monitor.check(), 
-    config.POLL_INTERVAL_SECONDS * 1000
-  );
 
-  // Start the scheduled monitoring
-  scheduler.start();
+  const checkingInterval = defer(() => monitor.check()).pipe(
+      catchError(err => {
+        console.error('Monitor error:', err);
+        return EMPTY; // ignore error and continue
+      }),
+      concatMap(() => {
+        console.log("REPEATING soon")
+        return timer(POLL_INTERVAL_SECONDS * 1000)
+      }), // wait delayMs before next run
+      repeat() // repeat indefinitely
+    ).subscribe();
+
+  // start interval-based checks
+  // const checkInterval = interval(config.POLL_INTERVAL_SECONDS * 1000)
+  //   .pipe(
+  //     exhaustMap(() => monitor.check()) // will wait for previous to finish
+  //   )
+  //   .subscribe({
+  //     error: (err) => console.error('Monitoring error:', err)
+  //   });
 
   // Log that the monitor has started
   logger.info('🚀 LST Depeg Monitor started (watching Dexscreener Pools specified in pool-list.ts)');
+
+  const shutdown = async (signal: string) => {
+    console.log(`🛑 Received ${signal}, shutting down...`);
+    checkingInterval.unsubscribe();
+    await storage.shutdown();
+    process.exit(0);
+  }
+
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
+  process.on('SIGHUP', shutdown);
 }
 
 // Run the main function and handle any uncaught errors

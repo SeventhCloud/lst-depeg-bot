@@ -34,7 +34,7 @@ export class FairValueService {
             abi: lst.abi,
             functionName: lst.functionName,
             address: lst.fairValueAddress as `0x${string}`,
-            args: [parseUnits('1', chainInfo.nativeCurrency.decimals)]
+            args: lst.args
         }) as bigint;
 
         return Number(formatUnits(fairValue, fairValueClient.info.nativeCurrency.decimals))

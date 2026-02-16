@@ -19,8 +19,9 @@
         "abi": "wstETH",
         "fairValueAddress": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
         "functionName": "stEthPerToken",
+        "args": [],
         "threshold": 0.003,
-        "alert": false
+        "alert": true
       }
     ]
   },
@@ -47,8 +48,9 @@
         "abi": "kHYPE",
         "fairValueAddress": "0x9209648Ec9D448EF57116B73A2f081835643dc7A",
         "functionName": "kHYPEToHYPE",
+        "args": [1e18],
         "threshold": 0.03,
-        "alert": false
+        "alert": true
       }
     ]
   },
@@ -67,12 +69,12 @@
         "name": "Staked AVAX",
         "pools": [
           "0x883ea72c2a46f7acb3820855344c43666c6cc5c0",
-          "0xee2ceda742bfb2ef566ab57642d47aba1909b653",
-          "0xf40e23204b2e1cc94930e15576b9ce47b4ad0f19"
+          "0xee2ceda742bfb2ef566ab57642d47aba1909b653"
         ],
         "abi": "sAVAX",
         "fairValueAddress": "0x2b2C81e08f1Af8835a78Bb2A90AE924ACE0eA4bE",
         "functionName": "getPooledAvaxByShares",
+        "args": [1e18],
         "threshold": 0.003,
         "alert": true
       }

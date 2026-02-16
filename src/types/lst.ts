@@ -6,7 +6,8 @@ export interface LSTToken {
   functionName: string
   pools: string[],
   threshold: number,
-  alert?: boolean
+  alert?: boolean,
+  args: any[]
 }
 
 // Request format for monitoring a DEX pair

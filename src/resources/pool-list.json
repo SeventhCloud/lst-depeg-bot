@@ -2,7 +2,8 @@
   {
     "chainName": "ethereum",
     "chainId": 1,
-    "rpc": "https://lb.drpc.live/ethereum/AqxOeMJ4-EgdsRRrXiQjMfxvj7_2AqMR8bNkehXRfUMv",
+    "rpc": "https://lb.drpc.live/ethereum",
+    "api": true,
     "nativeCurrency": {
       "name": "Ether",
       "symbol": "ETH",
@@ -13,9 +14,7 @@
         "symbol": "wstETH",
         "name": "Wrapped Staked Ether",
         "pools": [
-          "0x109830a1aaad605bbf02a9dfa7b0b92ec2fb7daa",
-          ""
-          
+          "0x109830a1aaad605bbf02a9dfa7b0b92ec2fb7daa"
         ],
         "abi": "wstETH",
         "fairValueAddress": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
@@ -28,7 +27,8 @@
   {
     "chainName": "hyperevm",
     "chainId": 999,
-    "rpc": "https://lb.drpc.live/hyperliquid/AqxOeMJ4-EgdsRRrXiQjMfxvj7_2AqMR8bNkehXRfUMv",
+    "rpc": "https://lb.drpc.live/hyperliquid",
+    "api": true,
     "nativeCurrency": {
       "name": "HYPE",
       "symbol": "HYPE",

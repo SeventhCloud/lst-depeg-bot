@@ -14,6 +14,7 @@ export type ChainInfo = {
   chainName: string;      // Blockchain network ID
   chainId: number;
   rpc: string;
+  api?: boolean;        // Indicates if the RPC requires an API key
   nativeCurrency: {name: string, symbol: string, decimals: number};
   tokens: LSTToken[];     // Stacking Tokens 
 };

@@ -19,7 +19,7 @@ export class FairValueService {
                     name: chain.chainName,
                     nativeCurrency: chain.nativeCurrency,
                     rpcUrls: {
-                        default: { http: [chain.rpc] }
+                        default: { http: [chain.api ? `${chain.rpc}/${process.env.RPC_KEY}` : chain.rpc] }
                     },
                 },
                 transport: http()

@@ -142,5 +142,9 @@ dist
 .env
 
 /src/generated/prisma
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
 .DS_Store
 

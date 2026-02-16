@@ -26,6 +26,32 @@
     ]
   },
   {
+    "chainName": "bsc",
+    "chainId": 56,
+    "rpc": "https://lb.drpc.live/bsc",
+    "api": true,
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18
+    },
+    "tokens": [
+      {
+        "symbol": "wbETH",
+        "name": "Wrapped Binance Ether",
+        "pools": [
+          "0x379044e32f5a162233e82de19da852255d0951b8"
+        ],
+        "abi": "wbETH",
+        "fairValueAddress": "0xa2E3356610840701BDf5611a53974510Ae27E2e1",
+        "functionName": "exchangeRate",
+        "args": [],
+        "threshold": 0.003,
+        "alert": true
+      }
+    ]
+  },
+  {
     "chainName": "hyperevm",
     "chainId": 999,
     "rpc": "https://lb.drpc.live/hyperliquid",

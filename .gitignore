@@ -141,6 +141,7 @@ node_modules
 dist
 .env
 
+# Databases
 /src/generated/prisma
 *.db
 *.sqlite

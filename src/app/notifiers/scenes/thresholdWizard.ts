@@ -1,6 +1,6 @@
 import { Markup, Scenes } from "telegraf";
 import { WizardScene } from "telegraf/scenes";
-import { ChainInfo, LSTToken } from "../../../types/lst";
+import { LSTToken, LSTTokenLifi } from "../../../types/lst";
 import { StorageService } from "../../services/SotrageService";
 
 
@@ -15,15 +15,11 @@ const thresholdWizard = (storageService: StorageService) => {
         "threshold-wizard",
         // Step 1: show buttons for all tokens
         async (ctx: any) => {
-            const chainInfo: ChainInfo[] = ctx.wizard.state.chainInfo;
-
-            const buttons = chainInfo.flatMap((chain: ChainInfo) =>
-                chain.tokens.map(token =>
-                    Markup.button.callback(
-                        `${token.symbol} - threshold: ${token.threshold*100}%`,
-                        JSON.stringify({ chainName: chain.chainName, symbol: token.symbol, threshold: token.threshold })
-                    )
-                )
+            const tokenList: LSTTokenLifi[] = ctx.wizard.state.tokenList;
+            const buttons = tokenList.map(token => Markup.button.callback(
+                `${token.symbol} - threshold: ${token.threshold*100}%`,
+                JSON.stringify({ symbol: token.symbol, threshold: token.threshold })
+            )
             );
 
             await ctx.reply(
@@ -50,19 +46,17 @@ const thresholdWizard = (storageService: StorageService) => {
                 return ctx.scene.leave();
             }
             const selectedToken = ctx.wizard.state.selectedTokens as ThresholdState
-            
-            const chainInfo: ChainInfo[] = ctx.wizard.state.chainInfo;
-            const chains = chainInfo.filter((c: ChainInfo) => c.tokens.some(token => token.symbol === selectedToken.symbol))
-            const tokens = chains.map(c => c.tokens.find(t => t.symbol === selectedToken.symbol)).filter(t => !!t)
+            const tokenList: LSTTokenLifi[] = ctx.wizard.state.tokenList;
+            const token = tokenList.find(t => t.symbol === selectedToken.symbol);
 
-            if (tokens.length === 0) {
+            if (!token) {
                 await ctx.reply("Token not found. Aborting wizard.");
                 return ctx.scene.leave();
             }
 
             const threshold = (Number(ctx.text)/100);
             // Activate/Deactivate Observation for that TOKEN on ALL Chains -> save changes
-            tokens.forEach(t => t.threshold = threshold)
+            token.threshold = threshold;
             storageService.save();
             await ctx.reply(`Threshold changed to ${(threshold/100).toFixed(4)}%`);
 

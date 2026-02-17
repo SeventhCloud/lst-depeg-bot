@@ -1,5 +1,5 @@
 import { catchError, concatMap, delay, filter, from, lastValueFrom, of, timer, toArray } from 'rxjs';
-import { ChainInfo } from '../../types/lst';
+
 import { Notifier } from '../notifiers/types';
 import { DexscreenerService } from '../services/DexscreenerService';
 import { FairValueService } from '../services/FairValueService';

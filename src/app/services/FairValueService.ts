@@ -1,9 +1,10 @@
-import { createPublicClient, formatUnits, http, parseAbi, parseEther, parseUnits, PublicClient } from "viem";
-import { ChainInfo, LSTToken } from "../../types/lst";
+import { createPublicClient, formatUnits, http, PublicClient } from "viem";
+import { ChainInfoLifi, LSTTokenLifi } from "../../types/lst";
+import logger from "../../infra/logger";
 
 interface FairValueClient {
     publicClient: PublicClient,
-    info: ChainInfo
+    info: ChainInfoLifi
 }
 
 
@@ -11,7 +12,7 @@ interface FairValueClient {
 export class FairValueService {
     clients: Map<string, FairValueClient> = new Map();
     
-    constructor(chainInfo: ChainInfo[]) { 
+    constructor(chainInfo: ChainInfoLifi[]) { 
         for (let chain of chainInfo) {
             const publicClient = createPublicClient({
                 chain: {
@@ -28,8 +29,9 @@ export class FairValueService {
         }
     }
 
-    async getFairValue(chainInfo: ChainInfo, lst: LSTToken): Promise<number> {
-        const fairValueClient = this.clients.get(chainInfo.chainName) as FairValueClient
+    async getFairValue(lst: LSTTokenLifi): Promise<number> {
+        logger.info(`Getting fair value for ${lst.symbol} on ${lst.chainName}`)
+        const fairValueClient = this.clients.get(lst.chainName) as FairValueClient
         const fairValue = await fairValueClient.publicClient.readContract({
             abi: lst.abi,
             functionName: lst.functionName,

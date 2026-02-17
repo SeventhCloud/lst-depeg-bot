@@ -1,0 +1,46 @@
+[
+    {
+        "chainName": "ethereum",
+        "chainId": 1,
+        "rpc": "https://lb.drpc.live/ethereum",
+        "api": true,
+        "nativeCurrency": {
+            "name": "Ether",
+            "symbol": "ETH",
+            "decimals": 18
+        }
+    },
+    {
+        "chainName": "bsc",
+        "chainId": 56,
+        "rpc": "https://lb.drpc.live/bsc",
+        "api": true,
+        "nativeCurrency": {
+            "name": "Ether",
+            "symbol": "ETH",
+            "decimals": 18
+        }
+    },
+    {
+        "chainName": "hyperevm",
+        "chainId": 999,
+        "rpc": "https://lb.drpc.live/hyperliquid",
+        "api": true,
+        "nativeCurrency": {
+            "name": "HYPE",
+            "symbol": "HYPE",
+            "decimals": 18
+        }
+    },
+    {
+        "chainName": "avalanche",
+        "chainId": 43114,
+        "rpc": "https://api.avax.network/ext/bc/C/rpc",
+        "api": false,
+        "nativeCurrency": {
+            "name": "Avalanche",
+            "symbol": "AVAX",
+            "decimals": 18
+        }
+    }
+]

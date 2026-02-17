@@ -54,14 +54,14 @@ export class TelegramBot {
     // Monitor command
     this.bot.command('monitor', async ctx => {
       return ctx.scene.enter("monitor-wizard", {
-        chainInfo: this.storageService.getChains(),
+        tokenList: this.storageService.getTokenList(),
       });
     });
 
     // Threshold command
     this.bot.command('threshold', async ctx => {
       return ctx.scene.enter("threshold-wizard", {
-        chainInfo: this.storageService.getChains(),
+        tokenList: this.storageService.getTokenList(),
       });
     });
 

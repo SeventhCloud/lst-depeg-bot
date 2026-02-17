@@ -6,6 +6,8 @@ import { config } from './config';
 import { PrismaClient } from './generated/prisma/client';
 import { logger } from './infra/logger';
 import { StorageService } from './app/services/SotrageService';
+import LiFiService from './app/services/LiFiService';
+import { LstMonitorLifi } from './app/monitors/LstMonitorLifi';
 
 const POLL_INTERVAL_SECONDS = Number(process.env.POLL_INTERVAL_SECONDS);
 
@@ -18,12 +20,12 @@ async function main() {
   const telegramBot = new TelegramBot(storage, storageService);
 
   // Load the list of LST pairs to monitor
-
   // Create the monitor instance with pairs and notifier
-  const monitor = new LstMonitorSmart(storageService, telegramBot, storage);
+  // const monitor = new LstMonitorSmart(storageService, telegramBot, storage);
+  const liFiService = await LiFiService.create(storageService.getChains());
+  const lifiMonitor = new LstMonitorLifi(storageService, telegramBot, storage, liFiService);
 
-
-  const checkingInterval = defer(() => monitor.check()).pipe(
+  const checkingInterval = defer(() => lifiMonitor.check()).pipe(
       catchError(err => {
         console.error('Monitor error:', err);
         return EMPTY; // ignore error and continue
@@ -45,7 +47,7 @@ async function main() {
   //   });
 
   // Log that the monitor has started
-  logger.info('🚀 LST Depeg Monitor started (watching Dexscreener Pools specified in pool-list.ts)');
+  logger.info('🚀 LST Depeg Monitor started (watching LiFi Pools)');
 
   const shutdown = async (signal: string) => {
     console.log(`🛑 Received ${signal}, shutting down...`);

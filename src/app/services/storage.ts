@@ -58,6 +58,10 @@ export class Storage {
         this.latestStatus = status;
     }
 
+    async shutdown(){
+        await this.prismaClient.$disconnect();
+    }
+
 }
 
 // Utility to map a DexPair object into Prisma-compatible format

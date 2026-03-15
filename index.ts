@@ -1,9 +1,10 @@
 import { catchError, concatMap, defer, EMPTY, repeat, timer } from 'rxjs';
-import { LstMonitorLifi } from './src/app/monitors/LstMonitor';
-import { TelegramBot } from './src/app/notifiers/TelegramBot';
-import LiFiService from './src/app/services/LiFiService';
-import { StorageService } from './src/app/services/SotrageService';
-import { logger } from './src/app/infra/logger';
+import { LstMonitorLifi } from './src/monitors/LstMonitor';
+import { TelegramBot } from './src/notifiers/TelegramBot';
+import LiFiService from './src/services/LiFiService';
+import { StorageService } from './src/services/SotrageService';
+import { logger } from './src/infra/logger';
+
 
 const POLL_INTERVAL_SECONDS = Number(process.env.POLL_INTERVAL_SECONDS);
 

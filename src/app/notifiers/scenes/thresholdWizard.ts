@@ -1,7 +1,7 @@
 import { Markup, Scenes } from "telegraf";
 import { WizardScene } from "telegraf/scenes";
 import { StorageService } from "../../services/SotrageService";
-import { LSTToken } from "../../types/lst";
+import type { LSTToken } from "../../types/lst";
 
 
 interface ThresholdState {

@@ -1,11 +1,11 @@
-import { createConfig, getQuote, getTokens, SDKBaseConfig, Token, TokensResponse } from "@lifi/sdk";
+import { createConfig, getQuote, getTokens, type SDKBaseConfig, type Token, type TokensResponse } from "@lifi/sdk";
 import { defaultIfEmpty, from, lastValueFrom, mergeMap, of } from "rxjs";
 import { catchError } from "rxjs/internal/operators/catchError";
 import { filter } from "rxjs/internal/operators/filter";
 import { reduce } from "rxjs/internal/operators/reduce";
 import { parseUnits } from "viem";
 import logger from "../infra/logger";
-import { ChainInfo, LSTToken } from "../types/lst";
+import type { ChainInfo, LSTToken } from "../types/lst";
 
 
 class LiFiService {

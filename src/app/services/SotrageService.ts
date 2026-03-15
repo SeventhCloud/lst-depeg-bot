@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { ChainInfo, LSTToken } from '../types/lst';
+import type { ChainInfo, LSTToken } from '../types/lst';
 
 export class StorageService {
   private chainList: ChainInfo[] = [];

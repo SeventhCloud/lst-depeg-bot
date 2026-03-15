@@ -1,5 +1,5 @@
-import { createPublicClient, formatUnits, http, PublicClient } from "viem";
-import { ChainInfo, LSTToken } from "../types/lst";
+import { createPublicClient, formatUnits, http, type PublicClient } from "viem";
+import type { ChainInfo, LSTToken } from "../types/lst";
 import logger from "../infra/logger";
 
 interface FairValueClient {

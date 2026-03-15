@@ -1,5 +1,5 @@
 import { session, Telegraf } from 'telegraf';
-import { Stage, WizardContext } from 'telegraf/scenes';
+import { Stage, type WizardContext } from 'telegraf/scenes';
 import { logger } from '../infra/logger';
 import { StorageService } from '../services/SotrageService';
 import monitorWizard from './scenes/monitorWizard';

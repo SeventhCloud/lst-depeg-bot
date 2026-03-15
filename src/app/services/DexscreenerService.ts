@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { DexscreenerResponse, DexPair } from './types';
+import { DexscreenerResponse, DexPair } from '../types/DexScreenerTypes';
 
 export class DexscreenerService {
   private baseUrl = 'https://api.dexscreener.com/latest/dex/pairs'; // API endpoint

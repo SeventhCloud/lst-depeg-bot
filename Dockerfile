@@ -11,7 +11,6 @@ RUN npm install --save-dev @types/node
 
 # Copy source and build
 COPY . .
-RUN npx prisma generate
 RUN npm run build
 
 # ---- Runtime stage ----
@@ -21,7 +20,6 @@ WORKDIR /app
 # Copy runtime files
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/src/generated ./dist/generated
 COPY package*.json ./
 
 # Add non-root user -- less secure

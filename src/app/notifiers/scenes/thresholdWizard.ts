@@ -1,7 +1,7 @@
 import { Markup, Scenes } from "telegraf";
 import { WizardScene } from "telegraf/scenes";
-import { LSTToken, LSTTokenLifi } from "../../../types/lst";
 import { StorageService } from "../../services/SotrageService";
+import { LSTToken } from "../../types/lst";
 
 
 interface ThresholdState {
@@ -15,9 +15,9 @@ const thresholdWizard = (storageService: StorageService) => {
         "threshold-wizard",
         // Step 1: show buttons for all tokens
         async (ctx: any) => {
-            const tokenList: LSTTokenLifi[] = ctx.wizard.state.tokenList;
+            const tokenList: LSTToken[] = ctx.wizard.state.tokenList;
             const buttons = tokenList.map(token => Markup.button.callback(
-                `${token.symbol} - threshold: ${token.threshold*100}%`,
+                `${token.symbol} - threshold: ${token.threshold * 100}%`,
                 JSON.stringify({ symbol: token.symbol, threshold: token.threshold })
             )
             );
@@ -46,7 +46,7 @@ const thresholdWizard = (storageService: StorageService) => {
                 return ctx.scene.leave();
             }
             const selectedToken = ctx.wizard.state.selectedTokens as ThresholdState
-            const tokenList: LSTTokenLifi[] = ctx.wizard.state.tokenList;
+            const tokenList: LSTToken[] = ctx.wizard.state.tokenList;
             const token = tokenList.find(t => t.symbol === selectedToken.symbol);
 
             if (!token) {
@@ -54,11 +54,11 @@ const thresholdWizard = (storageService: StorageService) => {
                 return ctx.scene.leave();
             }
 
-            const threshold = (Number(ctx.text)/100);
+            const threshold = (Number(ctx.text) / 100);
             // Activate/Deactivate Observation for that TOKEN on ALL Chains -> save changes
             token.threshold = threshold;
             storageService.save();
-            await ctx.reply(`Threshold changed to ${(threshold/100).toFixed(4)}%`);
+            await ctx.reply(`Threshold changed to ${(threshold / 100).toFixed(4)}%`);
 
             return ctx.scene.leave();
         }

@@ -1,8 +1,7 @@
 import { Markup, Scenes } from "telegraf";
 import { WizardScene } from "telegraf/scenes";
+import type { LSTToken } from "../../types/lst";
 import { StorageService } from "../../services/SotrageService";
-import { ChainList, LSTTokenLifi } from "../../../types/lst";
-
 
 interface MonitorState {
   chainName: string;
@@ -15,8 +14,7 @@ const monitorWizard = (storageService: StorageService) => {
     "monitor-wizard",
     // Step 1: show buttons for all tokens
     async (ctx: any) => {
-      const chainList: ChainList[] = ctx.wizard.state.chainList;
-      const tokenList: LSTTokenLifi[] = ctx.wizard.state.tokenList;
+      const tokenList: LSTToken[] = ctx.wizard.state.tokenList;
 
       const buttons = tokenList.map(token => Markup.button.callback(
         `${token.symbol} : ${token.alert ? '✅' : '❌'}`,
@@ -37,7 +35,7 @@ const monitorWizard = (storageService: StorageService) => {
         await ctx.reply("Please select a token using the buttons.");
         return ctx.wizard.selectStep(1);
       }
-      const tokenList: LSTTokenLifi[] = ctx.wizard.state.tokenList;
+      const tokenList: LSTToken[] = ctx.wizard.state.tokenList;
 
       const selectedToken: MonitorState = JSON.parse(ctx.callbackQuery.data);
       const token = tokenList.find(t => t.symbol === selectedToken.symbol);

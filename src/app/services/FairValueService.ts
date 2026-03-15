@@ -1,18 +1,16 @@
 import { createPublicClient, formatUnits, http, PublicClient } from "viem";
-import { ChainInfoLifi, LSTTokenLifi } from "../../types/lst";
-import logger from "../../infra/logger";
+import { ChainInfo, LSTToken } from "../types/lst";
+import logger from "../infra/logger";
 
 interface FairValueClient {
     publicClient: PublicClient,
-    info: ChainInfoLifi
+    info: ChainInfo
 }
-
-
 
 export class FairValueService {
     clients: Map<string, FairValueClient> = new Map();
-    
-    constructor(chainInfo: ChainInfoLifi[]) { 
+
+    constructor(chainInfo: ChainInfo[]) {
         for (let chain of chainInfo) {
             const publicClient = createPublicClient({
                 chain: {
@@ -29,7 +27,7 @@ export class FairValueService {
         }
     }
 
-    async getFairValue(lst: LSTTokenLifi): Promise<number> {
+    async getFairValue(lst: LSTToken): Promise<number> {
         logger.info(`Getting fair value for ${lst.symbol} on ${lst.chainName}`)
         const fairValueClient = this.clients.get(lst.chainName) as FairValueClient
         const fairValue = await fairValueClient.publicClient.readContract({
@@ -40,6 +38,6 @@ export class FairValueService {
         }) as bigint;
 
         return Number(formatUnits(fairValue, fairValueClient.info.nativeCurrency.decimals))
-        
+
     }
 }

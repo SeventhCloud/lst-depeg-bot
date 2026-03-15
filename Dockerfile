@@ -1,30 +1,38 @@
 # ---- Build stage ----
-FROM node:24-alpine AS builder
-WORKDIR /app
+FROM oven/bun:1 AS base
+WORKDIR /usr/src/app
 
-# Install dependencies
-COPY package*.json ./
-RUN npm ci --omit=dev
+# install dependencies into temp directory
+# this will cache them and speed up future builds
+FROM base AS install
+RUN mkdir -p /temp/dev
+COPY package.json bun.lock /temp/dev/
+RUN cd /temp/dev && bun install --frozen-lockfile
 
-# Install only @types/node for build
-RUN npm install --save-dev @types/node
+# install with --production (exclude devDependencies)
+RUN mkdir -p /temp/prod
+COPY package.json bun.lock /temp/prod/
+RUN cd /temp/prod && bun install --frozen-lockfile --production
 
-# Copy source and build
+# copy node_modules from temp directory
+# then copy all (non-ignored) project files into the image
+FROM base AS prerelease
+COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
-RUN npm run build
 
-# ---- Runtime stage ----
-FROM node:24-alpine AS runner
-WORKDIR /app
+RUN bun run build --minify --outfile=out.js
 
-# Copy runtime files
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist ./dist
-COPY package*.json ./
+# copy production dependencies and source code into final image
+FROM base AS release
+COPY --from=install /temp/prod/node_modules node_modules
+COPY --from=prerelease /usr/src/app/index.ts .
+COPY --from=prerelease /usr/src/app/out.js .
+COPY --from=prerelease /usr/src/app/package.json .
 
-# Add non-root user -- less secure
-#RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-#USER appuser
+# run the app
+USER bun
+EXPOSE 3000/tcp
+ENTRYPOINT [ "bun", "run", "out.js" ]
 
 # Start your bot
-CMD ["node", "dist/index.js"]
+CMD ["bun", "run", "out.js"]

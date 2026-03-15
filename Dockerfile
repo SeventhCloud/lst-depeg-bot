@@ -31,4 +31,4 @@ COPY --from=prerelease /usr/src/app/package.json .
 
 # run the app
 USER bun
-ENTRYPOINT [ "bun", "run", "out.js" ]
+ENTRYPOINT [ "bun", "out.js" ]

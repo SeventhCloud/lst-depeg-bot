@@ -24,7 +24,7 @@ async function main() {
     }),
     concatMap(() => {
       console.log("REPEATING soon")
-      return timer(POLL_INTERVAL_SECONDS * 1000)
+      return timer(POLL_INTERVAL_SECONDS * 10000)
     }), // wait delayMs before next run
     repeat() // repeat indefinitely
   ).subscribe();

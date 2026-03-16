@@ -1,23 +1,22 @@
-import { ChainId, createConfig, getQuote, getToken, getTokens, QuoteRequest, SDKBaseConfig, Token, TokensResponse } from "@lifi/sdk";
-import { ChainInfoLifi, LSTTokenLifi } from "../../types/lst";
-import { parseUnits } from "viem";
-import { throwError } from "rxjs/internal/observable/throwError";
-import { catchError } from "rxjs/internal/operators/catchError";
-import { reduce } from "rxjs/internal/operators/reduce";
-import { filter } from "rxjs/internal/operators/filter";
+import { createConfig, getQuote, getTokens, type SDKBaseConfig, type Token, type TokensResponse } from "@lifi/sdk";
 import { defaultIfEmpty, from, lastValueFrom, mergeMap, of } from "rxjs";
-import logger from "../../infra/logger";
+import { catchError } from "rxjs/internal/operators/catchError";
+import { filter } from "rxjs/internal/operators/filter";
+import { reduce } from "rxjs/internal/operators/reduce";
+import { parseUnits } from "viem";
+import logger from "../infra/logger";
+import type { ChainInfo, LSTToken } from "../types/lst";
 
 
 class LiFiService {
     private apiKey: string = "";
     private config: SDKBaseConfig = null as any;
-    private chainList: ChainInfoLifi[] = null as any;
+    private chainList: ChainInfo[] = null as any;
     private chainTokens: Map<number, Map<string, Token>> = new Map<number, Map<string, Token>>();
 
     private constructor() { }
 
-    static async create(chainInfo: ChainInfoLifi[]) {
+    static async create(chainInfo: ChainInfo[]) {
         const service = new LiFiService();
         service.apiKey = process.env.LI_FI_KEY || '';
         service.config = createConfig({
@@ -42,7 +41,7 @@ class LiFiService {
         return service;
     }
 
-    async getQuoteAllChains(lst: LSTTokenLifi, amount: string = parseUnits("1", 16).toString()) {
+    async getQuoteAllChains(lst: LSTToken, amount: string = parseUnits("1", 16).toString()) {
         const fromToken = lst.symbol;
         const toToken = lst.nativeSymbol;
 
@@ -61,7 +60,7 @@ class LiFiService {
                     getQuote({
                         fromChain: chainId,
                         toChain: chainId,
-                        fromToken: tokens.get(fromToken)!.address ,
+                        fromToken: tokens.get(fromToken)!.address,
                         toToken: tokens.get(toToken)!.address,
                         fromAmount: amount,
                         fromAddress: '0x7FF34Ff9c390440Feb54B6347E418154d435BFd4',

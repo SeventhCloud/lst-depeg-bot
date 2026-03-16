@@ -6,7 +6,4 @@ services:
     env_file:
       - .env                # default env file
     environment:
-      DATABASE_URL: file:/app/prisma/dev.db
       LOG_LEVEL: ${LOG_LEVEL:-info}
-    volumes:
-      - ./prisma:/app/prisma

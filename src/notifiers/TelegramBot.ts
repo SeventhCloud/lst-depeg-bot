@@ -1,8 +1,7 @@
 import { session, Telegraf } from 'telegraf';
-import { Stage, WizardContext } from 'telegraf/scenes';
-import { logger } from '../../infra/logger';
+import { Stage, type WizardContext } from 'telegraf/scenes';
+import { logger } from '../infra/logger';
 import { StorageService } from '../services/SotrageService';
-import { Storage } from '../services/storage';
 import monitorWizard from './scenes/monitorWizard';
 import thresholdWizard from './scenes/thresholdWizard';
 
@@ -10,7 +9,7 @@ export class TelegramBot {
   private bot: Telegraf<WizardContext>;
   private allowedUsers: Set<string> = new Set();
 
-  constructor(private storage: Storage, private storageService: StorageService) {
+  constructor(private storageService: StorageService) {
     this.bot = new Telegraf<WizardContext>(process.env.TELEGRAM_BOT_TOKEN!);
     this.allowedUsers = new Set(
       process.env.ALLOWED_USER_IDS?.trim().split(",") || []
@@ -67,10 +66,8 @@ export class TelegramBot {
 
     // Status command
     this.bot.command('status', async ctx => {
-      const status = this.storage.getStatus();
-      if (!status.length) return ctx.reply('No data yet. Wait until first check runs.');
-      const msg = status.map(s => `*${s.symbol}*: ratio=${s.ratio.toFixed(4)}, EMA=${s.ema?.toFixed(4) ?? 'n/a'}`).join('\n');
-      await ctx.reply(msg, { parse_mode: 'Markdown' });
+
+      await ctx.reply("nothin", { parse_mode: 'Markdown' });
     });
 
     this.bot.command('help', ctx => {

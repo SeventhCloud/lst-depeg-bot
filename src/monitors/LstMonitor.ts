@@ -1,42 +1,22 @@
-import { catchError, concatMap, delay, filter, from, lastValueFrom, of, timer, toArray } from 'rxjs';
 
-import { Notifier } from '../notifiers/types';
-import { DexscreenerService } from '../services/DexscreenerService';
+import logger from '../infra/logger';
 import { FairValueService } from '../services/FairValueService';
-import { PairStatus, Storage } from '../services/storage';
-import escapeMarkdownV2 from '../utils/utils';
-import { StorageService } from '../services/SotrageService';
-import logger from '../../infra/logger';
 import LiFiService from '../services/LiFiService';
+import { StorageService } from '../services/SotrageService';
+import escapeMarkdownV2 from '../utils/utils';
+import type { Notifier } from './Notifier';
 
 export class LstMonitorLifi {
 
   constructor(
     private storageService: StorageService, // List of LST pairs to monitor
     private notifier: Notifier,         // Service to send notifications
-    private storage: Storage, // Service to handle storage
     private liFiService: LiFiService, // Service to fetch live LST data
     private fairValueService = new FairValueService(storageService.getChains())
   ) { }
 
   // Main method to check all LST pairs
   async check(): Promise<void> {
-/* 
-    from(this.storageService.getTokenList()).pipe(
-      filter(lst => lst.alert), // only check tokens with alert enabled
-      concatMap(lst =>
-        timer(1000).pipe( // wait 1s before each token to avoid spamming APIs
-          concatMap(() => {
-            logger.info(`Checking ${lst.symbol} on ${lst.chainName}...`)
-            return from(this.liFiService.getQuoteAllChains(lst)).pipe(
-              catchError(err => {
-                console.error(`Failed to fetch market price for ${lst.symbol} on ${lst.chainName}:`, err);
-                return of(null); // skip this token on error
-              })
-            )
-          })
-        )
-      ) */
 
     for (const lst of this.storageService.getTokenList()) {
       if (!lst.alert)

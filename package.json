@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "bun build index.ts --minify --outfile=out.js"
+    "build": "bun build index.ts --minify --target=bun --outfile=out.js"
   },
   "devDependencies": {
     "@types/bun": "latest"

@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "bun build index.ts --minify --target=bun --outfile=out.js"
+    "build": "cp -r src/smart-contract-info dist/smart-contract-info && bun build index.ts --minify --target=bun --outfile=dist/out.js"
   },
   "devDependencies": {
     "@types/bun": "latest"

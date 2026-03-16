@@ -1,16 +1,18 @@
 import fs from 'fs';
 import path from 'path';
-import type { ChainInfo, LSTToken } from '../types/lst';
 import logger from '../infra/logger';
+import type { ChainInfo, LSTToken } from '../types/lst';
+
+const BASE_RESOURCE_DIR = process.env.RESOURCE_DIR || path.join(process.cwd(), 'src/smart-contract-info');
 
 export class StorageService {
   private chainList: ChainInfo[] = [];
   private tokenList: LSTToken[] = [];
 
   constructor(
-    private abiFolderPath: string = path.resolve(__dirname, '../resources/abis'),
-    private chainListPath: string = path.resolve(__dirname, '../resources/chain-info.json'),
-    private tokenListPath: string = path.resolve(__dirname, '../resources/tokens.json')
+    private abiFolderPath: string = path.resolve(BASE_RESOURCE_DIR, 'abis'),
+    private chainListPath: string = path.resolve(BASE_RESOURCE_DIR, 'chain-info.json'),
+    private tokenListPath: string = path.resolve(BASE_RESOURCE_DIR, 'tokens.json')
   ) {
     this.load();
   }

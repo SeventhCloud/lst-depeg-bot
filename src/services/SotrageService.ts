@@ -3,7 +3,7 @@ import path from 'path';
 import logger from '../infra/logger';
 import type { ChainInfo, LSTToken } from '../types/lst';
 
-const BASE_RESOURCE_DIR = process.env.RESOURCE_DIR || path.join(process.cwd(), 'src/smart-contract-info');
+const BASE_RESOURCE_DIR = fs.existsSync(path.join(process.cwd(), 'src/smart-contract-info')) ? path.join(process.cwd(), 'src/smart-contract-info') : path.join(process.cwd(), '/dist/smart-contract-info');
 
 export class StorageService {
   private chainList: ChainInfo[] = [];

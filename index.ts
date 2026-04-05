@@ -19,7 +19,7 @@ async function main() {
 
   const checkingInterval = defer(() => lifiMonitor.check()).pipe(
     catchError(err => {
-      console.error('Monitor error:', err);
+      console.error('Monitor error:');
       return EMPTY; // ignore error and continue
     }),
     concatMap(() => {

@@ -30,6 +30,12 @@ export class LstMonitorLifi {
       const minPrice = Number(marketPrice.estimate.toAmount);
       logger.info(`Current price for ${lst.symbol} is ${minPrice} ${lst.chainName}`)
       const fairValue = await this.fairValueService.getFairValue(lst);
+
+      if (!fairValue) {
+        logger.warn(`No fair value found for ${lst.symbol} on ${lst.chainName}, skipping...`)
+        continue
+      }
+      
       logger.info(`Fair value is: ${fairValue}`)
       if (fairValue - minPrice > lst.threshold) {
         let message = `DePEG Detected\n

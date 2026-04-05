@@ -1,4 +1,4 @@
-import { createConfig, getQuote, getTokens, type SDKBaseConfig, type Token, type TokensResponse } from "@lifi/sdk";
+import { createConfig, getQuote, getTokens, TokenTag, type SDKBaseConfig, type Token, type TokensResponse } from "@lifi/sdk";
 import { defaultIfEmpty, from, lastValueFrom, mergeMap, of } from "rxjs";
 import { catchError } from "rxjs/internal/operators/catchError";
 import { filter } from "rxjs/internal/operators/filter";
@@ -25,7 +25,8 @@ class LiFiService {
         });
         service.chainList = chainInfo;
         const tokensResponse: TokensResponse = await getTokens({
-            chains: service.chainList.map(chain => chain.chainId)
+            chains: service.chainList.map(chain => chain.chainId),
+            minPriceUSD: 15
         });
 
         // Process the tokens response to create a map of chainId to token address to token details
@@ -33,6 +34,10 @@ class LiFiService {
             const chainId = Number(chainIdStr);
             const tokenMap = new Map<string, Token>();
             for (const token of tokens) {
+                if (tokenMap.has(token.symbol)) {
+                    logger.warn(`Duplicate token symbol ${token.name} price: ${token.priceUSD}, skipping...`);
+                    continue;
+                }
                 tokenMap.set(token.symbol, token);
             }
             service.chainTokens.set(chainId, tokenMap);
@@ -55,7 +60,7 @@ class LiFiService {
             mergeMap(({ chainId }) => {
                 const tokens = this.chainTokens.get(chainId)!;
                 logger.info(`Fetching quote for ${lst.symbol} on ${chainId}...`)
-                logger.info(`From token: ${tokens.get(fromToken)!.address}, To token: ${tokens.get(toToken)!.address}, Amount: ${amount}`)
+                logger.info(`From token:${tokens.get(fromToken)?.symbol}  ${tokens.get(fromToken)!.address}, To token: ${tokens.get(toToken)!.address}, Amount: ${amount}`)
                 return from(
                     getQuote({
                         fromChain: chainId,

@@ -27,17 +27,22 @@ export class FairValueService {
         }
     }
 
-    async getFairValue(lst: LSTToken): Promise<number> {
+    async getFairValue(lst: LSTToken): Promise<number | null> {
         logger.info(`Getting fair value for ${lst.symbol} on ${lst.chainName}`)
-        const fairValueClient = this.clients.get(lst.chainName) as FairValueClient
-        const fairValue = await fairValueClient.publicClient.readContract({
-            abi: lst.abi,
-            functionName: lst.functionName,
-            address: lst.fairValueAddress as `0x${string}`,
-            args: lst.args
-        }) as bigint;
-
-        return Number(formatUnits(fairValue, fairValueClient.info.nativeCurrency.decimals))
-
+        const fairValueClient = this.clients.get(lst.chainName) as FairValueClient;
+        try {
+            const fairValue = await fairValueClient.publicClient.readContract({
+                abi: lst.abi,
+                functionName: lst.functionName,
+                address: lst.fairValueAddress as `0x${string}`,
+                args: lst.args
+            }) as bigint;
+    
+            return Number(formatUnits(fairValue, fairValueClient.info.nativeCurrency.decimals))
+            
+        } catch (error) {
+            logger.error(`Error occurred while fetching fair value for ${lst.symbol} on ${lst.chainName}`);
+            return null;
+        }
     }
 }
